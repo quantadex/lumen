@@ -19,10 +19,10 @@ type VersionByte byte
 
 const (
 	//VersionByteAccountID is the version byte used for encoded stellar addresses
-	VersionByteAccountID VersionByte = 6 << 3 // Base32-encodes to 'G...'
+	VersionByteAccountID VersionByte = 16 << 3 // Base32-encodes to 'Q...'
 
 	//VersionByteSeed is the version byte used for encoded stellar seed
-	VersionByteSeed = 18 << 3 // Base32-encodes to 'S...'
+	VersionByteSeed = 25 << 3 // Base32-encodes to 'Z...'
 
 	//VersionByteHashTx is the version byte used for encoded stellar hashTx
 	//signer keys.

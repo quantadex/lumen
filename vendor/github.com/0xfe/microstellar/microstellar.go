@@ -44,6 +44,7 @@ import (
 	"github.com/stellar/go/keypair"
 	"github.com/stellar/go/network"
 	"github.com/stellar/go/xdr"
+	"io/ioutil"
 )
 
 // MicroStellar is the user handle to the Stellar network. Use the New function
@@ -726,4 +727,21 @@ func (ms *MicroStellar) SubmitTransaction(b64Tx string) (*TxResponse, error) {
 	resp, err := tx.GetClient().SubmitTransaction(b64Tx)
 	txResponse := TxResponse(resp)
 	return &txResponse, ms.err(err)
+}
+
+func (ms *MicroStellar) FundWithFriendBot(address string) (string, error) {
+	url := ms.getTx().GetClient().URL +"/friendbot?addr=" + address
+	debugf("FundWithFriendBot", "funding address: %s", url)
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", err
+	}
+
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	return string(body), nil
 }

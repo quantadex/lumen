@@ -26,7 +26,7 @@ enum OperationType
     ACCOUNT_MERGE = 8,
     INFLATION = 9,
     MANAGE_DATA = 10,
-    BUMP_SEQUENCE = 11
+    SETTLEMENT = 110
 };
 
 /* CreateAccount
@@ -208,8 +208,8 @@ Result: InflationResult
 */
 
 /* ManageData
-    Adds, Updates, or Deletes a key value pair associated with a particular
-        account.
+    Adds, Updates, or Deletes a key value pair associated with a particular 
+	account.
 
     Threshold: med
 
@@ -218,20 +218,33 @@ Result: InflationResult
 
 struct ManageDataOp
 {
-    string64 dataName;
-    DataValue* dataValue; // set to null to clear
+    string64 dataName; 
+    DataValue* dataValue;   // set to null to clear
 };
 
-/* Bump Sequence
+/* Settlement
+    settlement blockchain op for matched orders
 
-    increases the sequence to a given level
+    Threshold: med
 
-    Result: BumpSequenceResult
+    Result: SettlementResult
 */
-
-struct BumpSequenceOp
+/***** Matched Order for settlement  ****/
+struct MatchedOrder
 {
-    SequenceNumber bumpTo;
+    AccountID  buyer;
+    AccountID  seller;
+    int64   amountBuy;
+    int64   amountSell;
+    Asset   assetBuy;
+    Asset   assetSell;
+};
+
+struct SettlementOp
+{
+    string settlementHash<>;
+    string parentSettlementHash<>;
+    MatchedOrder matchedOrders<>;
 };
 
 /* An operation is the lowest unit of work that a transaction does */
@@ -266,8 +279,8 @@ struct Operation
         void;
     case MANAGE_DATA:
         ManageDataOp manageDataOp;
-    case BUMP_SEQUENCE:
-        BumpSequenceOp bumpSequenceOp;
+    case SETTLEMENT:
+         SettlementOp settlementOp;
     }
     body;
 };
@@ -336,16 +349,14 @@ struct Transaction
     ext;
 };
 
-struct TransactionSignaturePayload
-{
+struct TransactionSignaturePayload {
     Hash networkId;
     union switch (EnvelopeType type)
     {
     case ENVELOPE_TYPE_TX:
-        Transaction tx;
-        /* All other values of type are invalid */
-    }
-    taggedTransaction;
+          Transaction tx;
+    /* All other values of type are invalid */
+    } taggedTransaction;
 };
 
 /* A TransactionEnvelope wraps a transaction with signatures. */
@@ -354,7 +365,8 @@ struct TransactionEnvelope
     Transaction tx;
     /* Each decorated signature is a signature over the SHA256 hash of
      * a TransactionSignaturePayload */
-    DecoratedSignature signatures<20>;
+    DecoratedSignature
+    signatures<20>;
 };
 
 /* Operation Results section */
@@ -561,8 +573,7 @@ enum ChangeTrustResultCode
     CHANGE_TRUST_NO_ISSUER = -2,     // could not find issuer
     CHANGE_TRUST_INVALID_LIMIT = -3, // cannot drop limit below balance
                                      // cannot create with a limit of 0
-    CHANGE_TRUST_LOW_RESERVE =
-        -4, // not enough funds to create a new trust line,
+    CHANGE_TRUST_LOW_RESERVE = -4, // not enough funds to create a new trust line,
     CHANGE_TRUST_SELF_NOT_ALLOWED = -5 // trusting self is not allowed
 };
 
@@ -585,7 +596,7 @@ enum AllowTrustResultCode
     ALLOW_TRUST_NO_TRUST_LINE = -2, // trustor does not have a trustline
                                     // source account does not require trust
     ALLOW_TRUST_TRUST_NOT_REQUIRED = -3,
-    ALLOW_TRUST_CANT_REVOKE = -4,     // source account can't revoke trust,
+    ALLOW_TRUST_CANT_REVOKE = -4, // source account can't revoke trust,
     ALLOW_TRUST_SELF_NOT_ALLOWED = -5 // trusting self is not allowed
 };
 
@@ -604,11 +615,10 @@ enum AccountMergeResultCode
     // codes considered as "success" for the operation
     ACCOUNT_MERGE_SUCCESS = 0,
     // codes considered as "failure" for the operation
-    ACCOUNT_MERGE_MALFORMED = -1,       // can't merge onto itself
-    ACCOUNT_MERGE_NO_ACCOUNT = -2,      // destination does not exist
-    ACCOUNT_MERGE_IMMUTABLE_SET = -3,   // source account has AUTH_IMMUTABLE set
-    ACCOUNT_MERGE_HAS_SUB_ENTRIES = -4, // account has trust lines/offers
-    ACCOUNT_MERGE_SEQNUM_TOO_FAR = -5   // sequence number is over max allowed
+    ACCOUNT_MERGE_MALFORMED = -1,      // can't merge onto itself
+    ACCOUNT_MERGE_NO_ACCOUNT = -2,     // destination does not exist
+    ACCOUNT_MERGE_IMMUTABLE_SET = -3,  // source account has AUTH_IMMUTABLE set
+    ACCOUNT_MERGE_HAS_SUB_ENTRIES = -4 // account has trust lines/offers
 };
 
 union AccountMergeResult switch (AccountMergeResultCode code)
@@ -650,12 +660,10 @@ enum ManageDataResultCode
     // codes considered as "success" for the operation
     MANAGE_DATA_SUCCESS = 0,
     // codes considered as "failure" for the operation
-    MANAGE_DATA_NOT_SUPPORTED_YET =
-        -1, // The network hasn't moved to this protocol change yet
-    MANAGE_DATA_NAME_NOT_FOUND =
-        -2, // Trying to remove a Data Entry that isn't there
-    MANAGE_DATA_LOW_RESERVE = -3, // not enough funds to create a new Data Entry
-    MANAGE_DATA_INVALID_NAME = -4 // Name not a valid string
+    MANAGE_DATA_NOT_SUPPORTED_YET = -1, // The network hasn't moved to this protocol change yet
+    MANAGE_DATA_NAME_NOT_FOUND = -2,    // Trying to remove a Data Entry that isn't there
+    MANAGE_DATA_LOW_RESERVE = -3,       // not enough funds to create a new Data Entry
+    MANAGE_DATA_INVALID_NAME = -4       // Name not a valid string
 };
 
 union ManageDataResult switch (ManageDataResultCode code)
@@ -665,33 +673,48 @@ case MANAGE_DATA_SUCCESS:
 default:
     void;
 };
-
-/******* BumpSequence Result ********/
-
-enum BumpSequenceResultCode
+/************ Settlement Result ****************/
+enum SettlementResultCode
 {
-    // codes considered as "success" for the operation
-    BUMP_SEQUENCE_SUCCESS = 0,
-    // codes considered as "failure" for the operation
-    BUMP_SEQUENCE_BAD_SEQ = -1 // `bumpTo` is not within bounds
+    SETTLEMENT_SUCCESS = 0,
+    /**failure codes ****/
+    SETTLEMENT_NOT_SUPPORTED_YET = -1, /** The network hasn't moved to this protocol change yet**/
+    SETTLEMENT_INVALID_ASSET = -2, /* invalid asset(s) */
+    SETTLEMENT_CROSS_SELF = -3, /* same buyer and seller */
+    SETTLEMENT_SELL_NO_ISSUER = -4,
+    SETTLEMENT_SELL_NO_TRUST = -5,
+    SETTLEMENT_SELL_NOT_AUTHORIZED = -6,
+    SETTLEMENT_BUY_NO_ISSUER = -7, 
+    SETTLEMENT_BUY_NO_TRUST = -8,
+    SETTLEMENT_BUY_NOT_AUTHORIZED = -9,
+    SETTLEMENT_LINE_FULL = -10,
+    SETTLEMENT_SELLER_LINE_FULL = -11,
+    SETTLEMENT_BUY_OVER_LIMIT = -12,
+    SETTLEMENT_SELL_OVER_BALANCE = -13,
+    SETTLEMENT_NEGATIVE_AMOUNT = -14,
+    SETTLEMENT_ASSETS_IDENTICAL = -15,
+    SETTLEMENT_BUYER_ACCOUNT_INVALID = -16,
+    SETTLEMENT_SELLER_ACCOUNT_INVALID = -17,
+    SETTLEMENT_SOURCE_ACCOUNT_INVALID = -18
+    /** not checked - TODO SETTLEMENT_INVALID_INORDER_TOTAL = -2 see yellowpaper(4.1) ***/
 };
 
-union BumpSequenceResult switch (BumpSequenceResultCode code)
+union SettlementResult switch (SettlementResultCode code)
 {
-case BUMP_SEQUENCE_SUCCESS:
-    void;
+case SETTLEMENT_SUCCESS:
+    SettlementResultCode codesVec<>;
 default:
     void;
 };
+
 /* High level Operation Result */
 
 enum OperationResultCode
 {
     opINNER = 0, // inner object result is valid
 
-    opBAD_AUTH = -1,     // too few valid signatures / wrong network
-    opNO_ACCOUNT = -2,   // source account was not found
-    opNOT_SUPPORTED = -3 // operation not supported at this time
+    opBAD_AUTH = -1,  // too few valid signatures / wrong network
+    opNO_ACCOUNT = -2 // source account was not found
 };
 
 union OperationResult switch (OperationResultCode code)
@@ -721,8 +744,8 @@ case opINNER:
         InflationResult inflationResult;
     case MANAGE_DATA:
         ManageDataResult manageDataResult;
-    case BUMP_SEQUENCE:
-        BumpSequenceResult bumpSeqResult;
+    case SETTLEMENT:
+         SettlementResult settlementResult;
     }
     tr;
 default:

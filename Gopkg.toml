@@ -27,15 +27,21 @@
 
 [[constraint]]
   name = "github.com/0xfe/microstellar"
-  branch = "master"
+  branch = "quanta"
+  source = "https://github.com/quantadex/microstellar.git"
+
+[[override]]
+  name = "github.com/stellar/go"
+  branch = "quanta"
+  source = "https://github.com/quantadex/stellar_go.git"
 
 [[constraint]]
   name = "github.com/go-redis/redis"
   version = "6.9.2"
 
-[[constraint]]
-  name = "github.com/sirupsen/logrus"
-  version = "1.0.4"
+#[[constraint]]
+#  name = "github.com/sirupsen/logrus"
+#  version = "1.0.4"
 
 [[constraint]]
   name = "github.com/spf13/cobra"

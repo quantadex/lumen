@@ -122,7 +122,7 @@ func (cli *CLI) buildFriendbotCmd() *cobra.Command {
 				return
 			}
 
-			response, err := microstellar.FundWithFriendBot(address)
+			response, err := cli.ms.FundWithFriendBot(address)
 
 			if err != nil {
 				cli.error(logFields, "friendbot error: %v", err)

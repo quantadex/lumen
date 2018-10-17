@@ -210,10 +210,12 @@ func (cli *CLI) ResolveAsset(name string) (*microstellar.Asset, error) {
 		if len(parts) > 2 {
 			assetType = parts[2]
 		} else {
-			if len(code) <= 5 {
+			if len(code) <= 4 {
 				assetType = string(microstellar.Credit4Type)
-			} else {
+			} else if len(code) <= 12 {
 				assetType = string(microstellar.Credit12Type)
+			} else {
+				assetType = string(microstellar.Credit64Type)
 			}
 		}
 
@@ -249,6 +251,8 @@ func (cli *CLI) ResolveAsset(name string) (*microstellar.Asset, error) {
 		asset = microstellar.NewAsset(code, issuer, microstellar.Credit4Type)
 	} else if assetType == string(microstellar.Credit12Type) {
 		asset = microstellar.NewAsset(code, issuer, microstellar.Credit12Type)
+	} else if assetType == string(microstellar.Credit64Type) {
+		asset = microstellar.NewAsset(code, issuer, microstellar.Credit64Type)
 	} else {
 		asset = microstellar.NativeAsset
 	}

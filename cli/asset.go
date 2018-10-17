@@ -70,6 +70,7 @@ func (cli *CLI) buildAssetSetCmd() *cobra.Command {
 						assetType, _ = cmd.Flags().GetString("type")
 						switch assetType {
 						case
+							string(microstellar.Credit64Type),
 							string(microstellar.Credit12Type),
 							string(microstellar.Credit4Type),
 							string(microstellar.NativeType):
@@ -79,7 +80,9 @@ func (cli *CLI) buildAssetSetCmd() *cobra.Command {
 							return
 						}
 					} else {
-						if len(code) > 4 {
+						if len(code) > 12 {
+							assetType = string(microstellar.Credit64Type)
+						} else if len(code) > 4 {
 							assetType = string(microstellar.Credit12Type)
 						} else {
 							assetType = string(microstellar.Credit4Type)
@@ -102,7 +105,7 @@ func (cli *CLI) buildAssetSetCmd() *cobra.Command {
 	}
 
 	cmd.Flags().String("code", "", "specify asset code")
-	cmd.Flags().String("type", "", "specify asset type (credit_alphanum4, credit_alphanum12, native)")
+	cmd.Flags().String("type", "", "specify asset type (credit_alphanum64, credit_alphanum4, credit_alphanum12, native)")
 
 	return cmd
 }
@@ -164,7 +167,10 @@ func (cli *CLI) buildAssetTypeCmd() *cobra.Command {
 					assetType = microstellar.Credit4Type
 				} else if asset.Type == microstellar.Credit12Type {
 					assetType = microstellar.Credit12Type
+				} else if asset.Type == microstellar.Credit64Type {
+					assetType = microstellar.Credit64Type
 				}
+
 				showSuccess(string(assetType))
 			}
 		},

@@ -3,11 +3,11 @@
 
 [[projects]]
   branch = "quanta"
-  digest = "1:9000481f305e96c1b82182b73ee6ea1c8f166632169a38a6008b66a08aa21cfd"
+  digest = "1:335971292892e7d24de3292ff4b2a033e4c7cd560fb2eb97f73d2d8ad4e53ca4"
   name = "github.com/0xfe/microstellar"
   packages = ["."]
   pruneopts = "UT"
-  revision = "612d78a342fb43a0c7f1085f5b8cd57a68e3643b"
+  revision = "d75f597d17fd34b21e21606a96fa3a67892fea99"
   source = "https://github.com/quantadex/microstellar.git"
 
 [[projects]]
@@ -62,12 +62,12 @@
   version = "v1.4.7"
 
 [[projects]]
-  branch = "master"
-  digest = "1:64ef2c2f0f508690f06c1b009e1e3103441ce60c2db0323ff94d8d1c560ec10b"
+  digest = "1:e51147e761aa8b6769e05e586c7012eb221c8be72fbc68a4340a53b974e67b9f"
   name = "github.com/getsentry/raven-go"
   packages = ["."]
   pruneopts = "UT"
-  revision = "084a9de9eb0361fbd5ded14b55c84e5493a5d7f6"
+  revision = "3033899c76deb3fb6570d9c4074d00443aeab88f"
+  version = "v0.1.0"
 
 [[projects]]
   digest = "1:aacef5f5e45685f2aeda5534d0a750dee6859de7e9088cdd06192787bb01ae6d"
@@ -78,7 +78,7 @@
   version = "v1.0.1"
 
 [[projects]]
-  digest = "1:7c2fd446293ff7799cc496d3446e674ee67902d119f244de645caf95dff1bb98"
+  digest = "1:34a9a60fade37f8009ed4a19e02924198aba3eabfcc120ee5c6002b7de17212d"
   name = "github.com/go-redis/redis"
   packages = [
     ".",
@@ -91,8 +91,8 @@
     "internal/util",
   ]
   pruneopts = "UT"
-  revision = "f3bba01df2026fc865f7782948845db9cf44cf23"
-  version = "v6.14.1"
+  revision = "b3d9bf10f6666b2ee5100a6f3f84f4caf3b4e37d"
+  version = "v6.14.2"
 
 [[projects]]
   digest = "1:c0d19ab64b32ce9fe5cf4ddceba78d5bc9807f0016db6b1183599da3dcc24d10"
@@ -157,12 +157,12 @@
   revision = "ae18d6b8b3205b561c79e8e5f69bff09736185f4"
 
 [[projects]]
-  digest = "1:044bb363b17077710e79605aec51f6d41d43c84c4a7cb1399ec4d3b76c566771"
+  digest = "1:53bc4cd4914cd7cd52139990d5170d6dc99067ae31c56530621b18b35fc30318"
   name = "github.com/mitchellh/mapstructure"
   packages = ["."]
   pruneopts = "UT"
-  revision = "4632c4f49fb352596def0d4005bcbe7f38fe9008"
-  version = "v1.1.0"
+  revision = "3536a929edddb9a5b34bd6861dc4a9647cb459fe"
+  version = "v1.1.2"
 
 [[projects]]
   branch = "master"
@@ -226,12 +226,12 @@
   version = "v1.1.2"
 
 [[projects]]
-  digest = "1:516e71bed754268937f57d4ecb190e01958452336fa73dbac880894164e91c1f"
+  digest = "1:08d65904057412fc0270fc4812a1c90c594186819243160dc779a402d4b6d0bc"
   name = "github.com/spf13/cast"
   packages = ["."]
   pruneopts = "UT"
-  revision = "8965335b8c7107321228e3e3702cab9832751bac"
-  version = "v1.2.0"
+  revision = "8c9545af88b134710ab1cd196795e7f2388358d7"
+  version = "v1.3.0"
 
 [[projects]]
   digest = "1:645cabccbb4fa8aab25a956cbcbdf6a6845ca736b2c64e197ca7cbb9d210b939"
@@ -250,12 +250,12 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:dab83a1bbc7ad3d7a6ba1a1cc1760f25ac38cdf7d96a5cdd55cd915a4f5ceaf9"
+  digest = "1:c1b1102241e7f645bc8e0c22ae352e8f0dc6484b6cb4d132fa9f24174e0119e2"
   name = "github.com/spf13/pflag"
   packages = ["."]
   pruneopts = "UT"
-  revision = "9a97c102cda95a86cec2345a6f09f55a939babf5"
-  version = "v1.0.2"
+  revision = "298182f68c66c05229eb03ac171abe6e309ee79a"
+  version = "v1.0.3"
 
 [[projects]]
   digest = "1:214775c11fd26da94a100111a62daa25339198a4f9c57cb4aab352da889f5b93"
@@ -267,7 +267,7 @@
 
 [[projects]]
   branch = "quanta"
-  digest = "1:3985b2c31d35c0208f39e2eea7c289e47f97770567ba89ff569f34b4843e7ef0"
+  digest = "1:62bffd9a2cf754270f793829c8e4e6d053c216aaa3066d35d32ba50fc4ccc4f0"
   name = "github.com/stellar/go"
   packages = [
     "address",
@@ -290,7 +290,7 @@
     "xdr",
   ]
   pruneopts = "UT"
-  revision = "4212372976a014528ee16b8820a97a72ec35ed50"
+  revision = "c0cd5f1f9e2d46466fee41159f65d3b980f02d92"
   source = "https://github.com/quantadex/stellar_go.git"
 
 [[projects]]
@@ -318,15 +318,15 @@
   name = "golang.org/x/net"
   packages = ["context"]
   pruneopts = "UT"
-  revision = "4dfa2610cdf3b287375bbba5b8f2a14d3b01d8de"
+  revision = "c44066c5c816ec500d459a2a324a753f78531ae0"
 
 [[projects]]
   branch = "master"
-  digest = "1:e2ced6fdf654069e8713c96012275fbd245381673d53e8c8ace640b28441a28b"
+  digest = "1:466e5917ea5f69d435d0ab3015dc4b57b80d34a6caf1104097ac82ab462b86e4"
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = "UT"
-  revision = "e4b3c5e9061176387e7cea65e4dc5853801f3fb7"
+  revision = "7e31e0c00fa05cb5fbf4347b585621d6709e19a4"
 
 [[projects]]
   digest = "1:8029e9743749d4be5bc9f7d42ea1659471767860f0cdc34d37c3111bd308a295"
